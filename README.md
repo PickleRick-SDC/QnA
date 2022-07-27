@@ -1,2 +1,2 @@
-# QnA
+# qna
 Questions and Answers
