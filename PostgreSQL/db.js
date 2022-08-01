@@ -65,14 +65,93 @@ const addAnswer = (req, res) => {
   })
 }
 
+const updateHelpful = (req, res) => {
 
+
+  // pool.query('UPDATE questions SET helpful = helpful + 1 where id = $1', [req.params.question_id], (err, results) => {
+  //   if(err) {
+  //     console.log(err.stack)
+  //     res.sendStatus(400);
+  //   }
+  //   res.status(204).send();
+  // })
+
+  const query = {
+    text: 'UPDATE questions SET helpful = helpful + 1 WHERE id = $1',
+    values: [req.params.question_id]
+  }
+
+  pool.query(query)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      console.log(err.stack);
+      res.status(400).send();
+    })
+}
+
+const updateReported = (req, res) => {
+
+  const query = {
+    text: 'UPDATE questions SET reported = NOT reported WHERE id = $1',
+    values: [req.params.question_id]
+  }
+
+  pool.query(query)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      console.log(err.stack);
+      res.status(400).send();
+    })
+}
+
+const updateAnswerHelpful = (req, res) => {
+
+  const query = {
+    text: 'UPDATE answers SET helpful = helpful + 1 WHERE id = $1',
+    values: [req.params.answer_id]
+  }
+
+  pool.query(query)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      console.log(err.stack);
+      res.status(400).send();
+    })
+}
+
+const updateAnswerReported = (req, res) => {
+
+  const query = {
+    text: 'UPDATE answers SET reported = NOT reported WHERE id = $1',
+    values: [req.params.answer_id]
+  }
+
+  pool.query(query)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      console.log(err.stack);
+      res.status(400).send();
+    })
+}
 
 module.exports = {
   pool,
   getQuestions,
   getAnswers,
   addQuestion,
-  addAnswer
+  addAnswer,
+  updateHelpful,
+  updateReported,
+  updateAnswerHelpful,
+  updateAnswerReported
 }
 
 // module.export = pool;

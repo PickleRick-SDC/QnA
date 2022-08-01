@@ -19,7 +19,7 @@ CREATE TABLE questions (
   date BIGINT NOT NULL,
   asker_name VARCHAR(100) NOT NULL,
   asker_email VARCHAR(100) NOT NULL,
-  reported VARCHAR NOT NULL DEFAULT 'false',
+  reported BOOLEAN,
   helpful INTEGER NOT NULL DEFAULT NULL,
   PRIMARY KEY (id)
 );
@@ -38,7 +38,7 @@ CREATE TABLE answers (
   date BIGINT NOT NULL,
   answerer_name VARCHAR(100) NOT NULL,
   answerer_email VARCHAR(100) NOT NULL,
-  reported VARCHAR NOT NULL DEFAULT 'false',
+  reported BOOLEAN,
   helpful INTEGER NOT NULL,
   PRIMARY KEY (id)
 );
@@ -65,9 +65,9 @@ ALTER TABLE answers ADD FOREIGN KEY (question_id) REFERENCES questions (id);
 ALTER TABLE photos ADD FOREIGN KEY (answer_id) REFERENCES answers (id);
 
 
--- COPY answers from '/data/answers.csv';
--- COPY photos from '/data/answers_photos.csv';
--- COPY questions from '/data/questions.csv';
+COPY questions from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/questions.csv' delimiter ',' CSV HEADER;
+COPY answers from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/answers.csv' delimiter ',' CSV HEADER;
+COPY photos from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/answers_photos.csv' delimiter ',' CSV HEADER;
 -- ---
 -- Table Properties
 -- ---
