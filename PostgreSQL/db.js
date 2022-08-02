@@ -13,14 +13,70 @@ pool.connect();
 
 // QUERIES
 const getQuestions = (request, response) => {
-  pool.query('SELECT * FROM questions LIMIT 5', (error, res) => {
+
+  // pool.query(
+  //   `SELECT * FROM questions
+  //  LIMIT 5`)
+  //   .this(({rows}) => {
+  //     response.status(200).json(rows);
+  //   })
+  //   .catch((err) =>
+  //   {
+  //     response.status(400).send(err);
+  //   })
+
+  const query = {
+    text: `SELECT
+    product_id,
+    (
+      SELECT json_agg(json_build_object(
+      'question_id', q.id,
+      'question_body', q.body,
+      'question_date', q.date,
+      'asker_name', q.asker_name,
+      'asker_email', q.asker_email,
+      'reported', q.reported,
+      'answers', (
+                    SELECT json_object_agg(
+                      a.id, json_build_object(
+                        'id', a.id,
+                        'body', a.body,
+                        'date', a.date,
+                        'answerer_name', a.answerer_name,
+                        'helpfulness', a.helpful,
+                        'photos', (
+                          SELECT json_agg(json_build_object(
+                            'id', ph.id,
+                            'url', ph.url
+                          ))
+                          FROM photos ph
+                          WHERE ph.answer_id = a.id
+                        )
+                      )
+                    )
+                    FROM answers a
+                    WHERE a.question_id = q.id
+                  )
+      ))
+      AS results
+      FROM questions q
+      WHERE id = 1
+    )
+    FROM questions
+    WHERE id = 1`
+  }
+
+  pool.query(query, (error, res) => {
     if (error) {
       throw error
     }
 
     response.status(200).json(res.rows);
+    pool.end();
   })
 }
+
+
 
 const getAnswers = (req, res) => {
   const query = {
@@ -67,14 +123,6 @@ const addAnswer = (req, res) => {
 
 const updateHelpful = (req, res) => {
 
-
-  // pool.query('UPDATE questions SET helpful = helpful + 1 where id = $1', [req.params.question_id], (err, results) => {
-  //   if(err) {
-  //     console.log(err.stack)
-  //     res.sendStatus(400);
-  //   }
-  //   res.status(204).send();
-  // })
 
   const query = {
     text: 'UPDATE questions SET helpful = helpful + 1 WHERE id = $1',
@@ -143,7 +191,6 @@ const updateAnswerReported = (req, res) => {
 }
 
 module.exports = {
-  pool,
   getQuestions,
   getAnswers,
   addQuestion,
