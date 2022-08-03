@@ -67,7 +67,7 @@ const getQuestions = (req, res) => {
 
   pool.query(query)
   .then(({rows}) => {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(err => {
     console.log('err');
@@ -114,7 +114,7 @@ const getAnswers = (req, res) => {
   }
   pool.query(query)
   .then(({rows}) => {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(err => {
     console.log(err);
@@ -163,7 +163,7 @@ const addAnswer = (req, res) => {
     pool.query(query1)
     .then(({rows}) => {
       console.log('POST')
-      res.status(200).json(rows);
+      res.status(200).json(rows[0]);
     })
     .catch(err => {
       console.log(err);
@@ -173,7 +173,7 @@ const addAnswer = (req, res) => {
     pool.query(query2)
     .then(({rows}) => {
       console.log('POST')
-      res.status(200).json(rows);
+      res.status(200).json(rows[0]);
     })
     .catch(err => {
       console.log(err);
