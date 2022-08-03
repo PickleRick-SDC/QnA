@@ -113,7 +113,7 @@ const getAnswers = (req, res) => {
   }
   pool.query(query)
   .then(({rows}) => {
-    res.status(200).json(rows[0]);
+    res.status(200).json(rows);
   })
   .catch(err => {
     console.log(err);

@@ -13,14 +13,14 @@
 DROP TABLE IF EXISTS questions;
 
 CREATE TABLE questions (
-  id INTEGER NOT NULL,
+  id SERIAL PRIMARY KEY NOT NULL,
   product_id INTEGER NOT NULL,
   body VARCHAR(255) NOT NULL,
-  date BIGINT NOT NULL,
+  date BIGINT,
   asker_name VARCHAR(100) NOT NULL,
   asker_email VARCHAR(100) NOT NULL,
   reported BOOLEAN,
-  helpful INTEGER NOT NULL DEFAULT NULL,
+  helpful INTEGER DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -32,14 +32,14 @@ CREATE TABLE questions (
 DROP TABLE IF EXISTS answers;
 
 CREATE TABLE answers (
-  id INTEGER NOT NULL,
+  id SERIAL PRIMARY KEY NOT NULL,
   question_id INTEGER NOT NULL,
   body VARCHAR(255) NOT NULL,
-  date BIGINT NOT NULL,
+  date BIGINT,
   answerer_name VARCHAR(100) NOT NULL,
   answerer_email VARCHAR(100) NOT NULL,
   reported BOOLEAN,
-  helpful INTEGER NOT NULL,
+  helpful INTEGER,
   PRIMARY KEY (id)
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE answers (
 DROP TABLE IF EXISTS photos;
 
 CREATE TABLE photos (
-  id INTEGER NOT NULL,
+  id SERIAL PRIMARY KEY NOT NULL,
   answer_id INTEGER NOT NULL,
   url VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
