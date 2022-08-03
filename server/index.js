@@ -25,16 +25,17 @@ app.get('/hello', (req, res) => {
 })
 
 // LIST QUESTIONS
-app.get('/qa/questions', db.getQuestions)
+// app.get('/qa/questions/:product_id/:page?/:count?', db.getQuestions)
+app.get('/qa/questions/', db.getQuestions)
 // ANSWERS LIST
 app.get('/qa/questions/:question_id/answers', db.getAnswers)
-// ADD A QUESTION - done
+// ADD A QUESTION - TODO
 app.post('/qa/questions', db.addQuestion)
-// ADD AN ANSWER - done
+// ADD AN ANSWER - TODO
 app.post(`/qa/questions/:question_id/answers`, db.addAnswer)
 // MARK QUESTION AS HELPFUL
 app.put(`/qa/questions/:question_id/helpful`, db.updateHelpful)
-// // REPORT A QUESTION
+// // REPORT A QUESTION -
 app.put(`/qa/questions/:question_id/report`, db.updateReported)
 // // MARK ANSWER AS HELPFUL
 app.put(`/qa/answers/:answer_id/helpful`, db.updateAnswerHelpful)

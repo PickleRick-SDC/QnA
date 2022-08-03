@@ -12,18 +12,11 @@ pool.connect();
 
 
 // QUERIES
-const getQuestions = (request, response) => {
+const getQuestions = (req, res) => {
 
-  // pool.query(
-  //   `SELECT * FROM questions
-  //  LIMIT 5`)
-  //   .this(({rows}) => {
-  //     response.status(200).json(rows);
-  //   })
-  //   .catch((err) =>
-  //   {
-  //     response.status(400).send(err);
-  //   })
+  const product_id = req.query.product_id;
+  const page = req.query.page || 1;
+  const count = req.query.count || 5;
 
   const query = {
     text: `SELECT
@@ -60,43 +53,78 @@ const getQuestions = (request, response) => {
       ))
       AS results
       FROM questions q
-      WHERE id = 1
+      WHERE id = $1
     )
     FROM questions
-    WHERE id = 1`
+    WHERE id = $1
+    AND reported = false
+    GROUP BY 1 OFFSET ($2 - 1) * $3
+    LIMIT $3
+    `,
+    values: [product_id, page, count],
   }
 
-  pool.query(query, (error, res) => {
-    if (error) {
-      throw error
-    }
-
-    response.status(200).json(res.rows);
-    pool.end();
+  pool.query(query)
+  .then(({rows}) => {
+    res.status(200).json(rows);
+  })
+  .catch(err => {
+    console.log('err');
+    res.status(400).send(err);
   })
 }
 
 
 
 const getAnswers = (req, res) => {
-  const query = {
-    text: `SELECT * FROM answers WHERE question_id = ${req.params.question_id}`
-  }
-  pool.query(query, (err, results) => {
-    if (err) {
-      console.log(err);
-      // response.status(404).json(req);
-      res.send('this is ' + req.params.question_id)
-    }
+  const question_id = req.params.question_id;
+  const page = (req.query.page || 1);
+  const count = (req.query.count || 5);
 
-    res.status(200).json(results.rows);
+
+  const query = {
+    text: `
+    SELECT
+    a.question_id as question,
+    ${page} as page,
+    ${count} as count,
+      (json_agg(json_build_object(
+        'answer_id', a.id,
+        'body', a.body,
+        'date', a.date,
+        'answerer_name', a.answerer_name,
+        'helpfulness', a.helpful,
+        'photos', (SELECT json_agg(json_build_object(
+          'id', ph.id,
+          'url', ph.url
+        ))
+        FROM photos ph
+        WHERE ph.answer_id = a.id
+        )
+      ))
+      ) AS result
+    FROM answers a
+    WHERE a.question_id = $1
+    GROUP BY a.question_id
+    OFFSET ($2 - 1)
+    LIMIT $3
+    `,
+    values: [question_id, page, count],
+  }
+  pool.query(query)
+  .then(({rows}) => {
+    res.status(200).json(rows[0]);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(400).send(err);
   })
 }
 
 const addQuestion = (req, res) => {
   const {body, name, email, product_id} = req.body;
   const query = {
-    text: 'INSERT INTO answers (body, name, email, product_id) VALUES($1, $2, $3, $4) RETURNING *',
+    text: 'INSERT INTO answers (body, asker_name, asker_email, product_id) VALUES($1, $2, $3, $4) RETURNING *',
     values: [body, name, email, product_id]
   }
   pool.query(query, (err, results) => {
@@ -104,7 +132,7 @@ const addQuestion = (req, res) => {
       console.log(req)
     }
     // res.status(200).json(results);
-    res.send('dkdk' + req.body)
+    res.send('dkdk' + req.body.body)
   })
 }
 
@@ -117,7 +145,7 @@ const addAnswer = (req, res) => {
     if (err) {
       console.log(err.stack)
     }
-    response.status(200).json(res.rows);
+    res.status(200).json(res.rows);
   })
 }
 
