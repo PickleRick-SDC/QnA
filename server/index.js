@@ -9,12 +9,12 @@ const app = express();
 const port = 3001;
 
 // using the bodyParser to parse Json bodies into JS objects
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-)
+app.use(express.json());
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// )
 
 // enable CORS for all requests
 // app.use(cors());

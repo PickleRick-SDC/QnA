@@ -58,7 +58,8 @@ const getQuestions = (req, res) => {
     FROM questions
     WHERE id = $1
     AND reported = false
-    GROUP BY 1 OFFSET ($2 - 1) * $3
+    GROUP BY product_id
+    OFFSET ($2 - 1)
     LIMIT $3
     `,
     values: [product_id, page, count],
@@ -122,31 +123,63 @@ const getAnswers = (req, res) => {
 }
 
 const addQuestion = (req, res) => {
+  console.log(req.body);
   const {body, name, email, product_id} = req.body;
   const query = {
-    text: 'INSERT INTO answers (body, asker_name, asker_email, product_id) VALUES($1, $2, $3, $4) RETURNING *',
+    text: 'INSERT INTO questions (body, asker_name, asker_email, product_id) VALUES($1, $2, $3, $4) RETURNING *',
     values: [body, name, email, product_id]
   }
-  pool.query(query, (err, results) => {
-    if (err) {
-      console.log(req)
-    }
-    // res.status(200).json(results);
-    res.send('dkdk' + req.body.body)
-  })
+  pool.query(query)
+    .then(({rows}) => {
+      console.log('POST')
+      res.status(200).json(rows);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).send(err);
+    })
 }
 
 const addAnswer = (req, res) => {
-  const query = {
-    text: 'INSERT INTO answers (body, name, email, photos) VALUES($1, $2, $3, $4)',
-    values: [body, name, email, photos]
+  const {body, name, email, photos} = req.body;
+  const question_id = req.params.question_id;
+  const query1 = {
+    text: 'INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES($1, $2, $3, $4)',
+    values: [question_id, body, name, email]
   }
-  pool.query(query, (err, res) => {
-    if (err) {
-      console.log(err.stack)
-    }
-    res.status(200).json(res.rows);
-  })
+
+  const query2 = {
+    text: `WITH ans AS (
+      INSERT INTO answers
+        (question_id, body, answerer_name, answerer_email)
+      VALUES($1, $2, $3, $4)
+      RETURNING ID
+      )
+      INSERT INTO photos VALUES($5, answer_id)
+      `,
+  values: [question_id, body, name, email, photos]
+  }
+  if (!photos) {
+    pool.query(query1)
+    .then(({rows}) => {
+      console.log('POST')
+      res.status(200).json(rows);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).send(err);
+    })
+  } else {
+    pool.query(query2)
+    .then(({rows}) => {
+      console.log('POST')
+      res.status(200).json(rows);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).send(err);
+    })
+  }
 }
 
 const updateHelpful = (req, res) => {

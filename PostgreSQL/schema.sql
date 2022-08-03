@@ -61,6 +61,12 @@ CREATE TABLE photos (
 ALTER TABLE answers ADD FOREIGN KEY (question_id) REFERENCES questions (id);
 ALTER TABLE photos ADD FOREIGN KEY (answer_id) REFERENCES answers (id);
 
+ALTER TABLE questions ALTER COLUMN date TYPE timestamp USING (to_timestamp(date::decimal/1000) AT TIME ZONE 'utc');
+ALTER TABLE questions ALTER date SET DEFAULT now()::timestamp(3);
+
+ALTER TABLE answers ALTER COLUMN date TYPE timestamp USING (to_timestamp(date::decimal/1000) AT TIME ZONE 'utc');
+ALTER TABLE answers ALTER date SET DEFAULT now()::timestamp(3);
+
 
 COPY questions from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/questions.csv' delimiter ',' CSV HEADER;
 COPY answers from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/answers.csv' delimiter ',' CSV HEADER;
