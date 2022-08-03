@@ -20,8 +20,7 @@ CREATE TABLE questions (
   asker_name VARCHAR(100) NOT NULL,
   asker_email VARCHAR(100) NOT NULL,
   reported BOOLEAN,
-  helpful INTEGER DEFAULT NULL,
-  PRIMARY KEY (id)
+  helpful INTEGER DEFAULT NULL
 );
 
 -- ---
@@ -39,8 +38,7 @@ CREATE TABLE answers (
   answerer_name VARCHAR(100) NOT NULL,
   answerer_email VARCHAR(100) NOT NULL,
   reported BOOLEAN,
-  helpful INTEGER,
-  PRIMARY KEY (id)
+  helpful INTEGER
 );
 
 -- ---
@@ -53,8 +51,7 @@ DROP TABLE IF EXISTS photos;
 CREATE TABLE photos (
   id SERIAL PRIMARY KEY NOT NULL,
   answer_id INTEGER NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id)
+  url VARCHAR(255) NOT NULL
 );
 
 -- ---
