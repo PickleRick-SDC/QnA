@@ -68,9 +68,9 @@ ALTER TABLE answers ALTER COLUMN date TYPE timestamp USING (to_timestamp(date::d
 ALTER TABLE answers ALTER date SET DEFAULT now()::timestamp(3);
 
 
-COPY questions from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/questions.csv' delimiter ',' CSV HEADER;
-COPY answers from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/answers.csv' delimiter ',' CSV HEADER;
-COPY photos from '/Users/jonathanoh/Documents/code/Hack Reactor Precourse/qna/data/answers_photos.csv' delimiter ',' CSV HEADER;
+COPY questions from './data/questions.csv' delimiter ',' CSV HEADER;
+COPY answers from './data/answers.csv' delimiter ',' CSV HEADER;
+COPY photos from './data/answers_photos.csv' delimiter ',' CSV HEADER;
 -- ---
 -- Table Properties
 -- ---
