@@ -4,6 +4,6 @@ config.js
 /coverage
 dist/.gz
 dist/bundle.js.gz
-
+.env
 # data csv files
 *.csv
