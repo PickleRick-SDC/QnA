@@ -3,10 +3,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 // const queries = require('../PostgreSQL/queries.js');
 const db = require('../PostgreSQL/db.js');
+require('dotenv').config();
 
 // define the Express app
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 
 // using the bodyParser to parse Json bodies into JS objects
 app.use(express.json());
@@ -20,9 +21,9 @@ app.use(express.json());
 // app.use(cors());
 
 // defining an endpoint to return all
-app.get('/hello', (req, res) => {
-  res.status(200).send('hello')
-})
+
+app.get('/loaderio-34826b5e8ce9b1bde360b137a0c28938', (req, res) =>
+        res.send('loaderio-34826b5e8ce9b1bde360b137a0c28938'));
 
 // LIST QUESTIONS
 // app.get('/qa/questions/:product_id/:page?/:count?', db.getQuestions)
